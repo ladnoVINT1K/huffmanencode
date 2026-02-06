@@ -3,3 +3,6 @@
 .tests/
 tests/
 test
+test-encoded
+test-encoded-decoded
+test-codetable
