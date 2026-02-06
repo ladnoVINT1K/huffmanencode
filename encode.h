@@ -39,7 +39,7 @@ private:
     void generateCodes(Note* node, std::string code, std::unordered_map<char, std::string>& codes) const;
 
     std::unordered_map<char, long long> readFrequencies(std::ifstream& in);
-    long long size;
+    unsigned long long size;
     void buildTreeFromCodes();
 
 
@@ -113,6 +113,7 @@ std::unordered_map<char, long long> huffmanTree::readFrequencies(std::ifstream& 
         size++;
         f[c]++;
     }
+    in.seekg(0);
     return f;
 }
 
@@ -239,7 +240,7 @@ void huffmanTree::decode(std::ifstream& in,
     Note* cur = HEAD;
 
     while (size != 0) {
-        size--;
+        std::cout << size << ' ';
         if (bitsLeft == 0) {
             if (!in.get((char&)buf))
                 break;
@@ -253,6 +254,7 @@ void huffmanTree::decode(std::ifstream& in,
 
         if (cur->s_ != '\0') {
             out.put(cur->s_);
+            size--;
             cur = HEAD;
         }
     }
