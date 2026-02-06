@@ -45,13 +45,13 @@ int main(int argc, char** argv) {
             out.open(filename + "-codetable", std::ofstream::out | std::ifstream::binary);
             huffmanTree T(in);
             T.writeHeader(out);
-            for (auto i : T.getCodeTable()) std::cout << i.first << ' ' << i.second << '\n';
             in.close();
+            out.close();
         } catch (std::exception e) {
             std::cerr << e.what();
             return 1;
         }
-    }else {
+    } else {
         std::cerr << "Invalid argument!";
     }
     return 0;
