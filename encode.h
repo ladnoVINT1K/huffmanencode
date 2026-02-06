@@ -28,7 +28,7 @@ public:
     }
 
     void encode(std::ifstream& input, const std::string& outputFilename);
-    void decode(std::ifstream& binaryInput, const std::string& outputFilename) const;
+    void decode(std::ifstream& binaryInput, const std::string& outputFilename);
 
 private:
     Note* HEAD = nullptr;
@@ -38,7 +38,7 @@ private:
     void generateCodes(Note* node, std::string code, std::unordered_map<char, std::string>& codes) const;
 
     std::unordered_map<char, long long> readFrequencies(std::ifstream& in);
-
+    long long size;
     void writeHeader(std::ofstream& out);
     void readHeader(std::ifstream& in);
     void buildTreeFromCodes();
@@ -51,7 +51,7 @@ private:
 huffmanTree::huffmanTree(std::ifstream& input) {
     if (!input.is_open())
         throw std::runtime_error("Input file not open");
-
+    size = 0;
     auto freq = readFrequencies(input);
     input.clear();
     input.seekg(0);
@@ -107,20 +107,20 @@ void huffmanTree::generateCodes(Note* node, std::string code,
     generateCodes(node->r_, code + "1", codes);
 }
 
-std::unordered_map<char, long long>
-huffmanTree::readFrequencies(std::ifstream& in) {
-
+std::unordered_map<char, long long> huffmanTree::readFrequencies(std::ifstream& in) {
     std::unordered_map<char, long long> f;
     char c;
-    while (in.get(c))
+    while (in.get(c)) {
+        size++;
         f[c]++;
+    }
     return f;
 }
 
 void huffmanTree::writeHeader(std::ofstream& out) {
     uint32_t count = codeTable.size();
     out.write((char*)&count, sizeof(count));
-
+    out.write((char*)&size, sizeof(size));
     for (auto& [sym, code] : codeTable) {
 
         uint64_t packed = 1; // leading 1
@@ -135,7 +135,7 @@ void huffmanTree::writeHeader(std::ofstream& out) {
 void huffmanTree::readHeader(std::ifstream& in) {
     uint32_t count;
     in.read((char*)&count, sizeof(count));
-
+    in.read((char*)&size, sizeof(size));
     codeTable.clear();
 
     for (uint32_t i = 0; i < count; ++i) {
@@ -229,8 +229,7 @@ void huffmanTree::encode(std::ifstream& input,
 }
 
 void huffmanTree::decode(std::ifstream& in,
-    const std::string& outputFilename) const
-{
+    const std::string& outputFilename) {
     if (!HEAD)
         throw std::runtime_error("Tree empty");
 
@@ -240,8 +239,8 @@ void huffmanTree::decode(std::ifstream& in,
     int bitsLeft = 0;
     Note* cur = HEAD;
 
-    while (true) {
-
+    while (size != 0) {
+        size--;
         if (bitsLeft == 0) {
             if (!in.get((char&)buf))
                 break;
