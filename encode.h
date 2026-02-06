@@ -29,7 +29,8 @@ public:
 
     void encode(std::ifstream& input, const std::string& outputFilename);
     void decode(std::ifstream& binaryInput, const std::string& outputFilename);
-
+    void writeHeader(std::ofstream& out);
+    void readHeader(std::ifstream& in);
 private:
     Note* HEAD = nullptr;
     std::unordered_map<char, std::string> codeTable;
@@ -39,8 +40,6 @@ private:
 
     std::unordered_map<char, long long> readFrequencies(std::ifstream& in);
     long long size;
-    void writeHeader(std::ofstream& out);
-    void readHeader(std::ifstream& in);
     void buildTreeFromCodes();
 
 

@@ -41,7 +41,10 @@ int main(int argc, char** argv) {
         try {
             std::ifstream in;
             in.open(filename, std::ifstream::in | std::ifstream::binary);
+            std::ofstream out;
+            out.open(filename + "-codetable", std::ofstream::out | std::ifstream::binary);
             huffmanTree T(in);
+            T.writeHeader(out);
             for (auto i : T.getCodeTable()) std::cout << i.first << ' ' << i.second << '\n';
             in.close();
         } catch (std::exception e) {
