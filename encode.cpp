@@ -2,6 +2,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <iostream>
 
 int main(int argc, char** argv) {
     std::locale::global(std::locale("ru_RU.UTF-8"));
@@ -15,7 +16,7 @@ int main(int argc, char** argv) {
             huffmanTree T(in, true);
             T.decode(in, filename + "-decoded");
             std::cout << "sucsessfull!\n";
-            for (auto i : T.getCodeTable()) std::cout << i.first << ' ' << i.second << '\n';
+            // for (auto i : T.getCodeTable()) std::cout << i.first << ' ' << i.second << '\n';
             in.close();
         } catch (std::exception e) {
             std::cerr << e.what();
